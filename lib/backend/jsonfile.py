@@ -40,8 +40,9 @@ class JsonFileBackend():
         self.events_list.sort()
         logger.info("[BACKEND][JSON]Loaded " + str(len(self.events_list)) + ' events' )
 
-    def events(self,start_date=None):
+    def events(self,start_date,end_date):
         for event in self.events_list:
-            yield event 
+            if event.start > start_date and event.start < end_date:
+                yield event 
 
 sys.modules[__name__] =  JsonFileBackend

@@ -19,7 +19,7 @@ class Calendar(object):
             1. If we have any meeting in some day, find a empty slots same day.
             2. If we don't have any meetings, just skip the day
         """
-        calendar_events = self.backend.events(start)
+        calendar_events = self.backend.events(start,end)
         event = next(calendar_events)
 
         if event is None:
@@ -41,7 +41,7 @@ class Calendar(object):
             """ There is empty slot in the beginig of th date """
             yield Freeslot(start_date,event.start)
 
-        for ev in self.backend.events():
+        for ev in calendar_events:
             """ Enumerate event and fill free slots """
             if event.end < ev.start:
                 """ There is free slot """
@@ -67,5 +67,9 @@ class Calendar(object):
                 logger.debug("[CALENDAR][FIND]Found empty slot " + str(ev))
                 yield ev 
 
-    def show(self,*args):
-        return self.process()
+    def show(self,args):
+
+        start_date = Date.fromDateString(args[0],True)
+        end_date = Date.fromDateString(args[1],False)
+        
+        return self.process(start_date,end_date)
